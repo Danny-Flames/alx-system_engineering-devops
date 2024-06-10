@@ -1,18 +1,43 @@
 <img src=./image.png width=50%>
 
-# BooktifuL requests failure report
-Last week, it was reported that the BooktifuL platform was returning 500 Error on all requests made on the platform routes, all the services were down.  90% of the users were affected. The root cause was the failure of our master server web-01.
+### Issue Summary
+## Duration of Outage:
+The issue persisted for three weeks, from May 1, 2024, 09:00 AM to May 22, 2024, 04:00 PM.
 
-## Timeline
-The error was realized on Saturday 26th February 1200 hours (East Africa Time) when our Site Reliability Engineer, Mr Elie saw the master server lagging in speed. Our engineers on call disconnected the master server web-01 for further system analysis and channelled all requests to client server web-02. They soled problem by 4th May, 2023
+### Impact:
+The core banking application’s 'loan product factory' and 'loan management' sections were affected. Specifically, when an admin attempted to create a new collateral asset, the newly created asset did not update in the displayed list without a manual page refresh. This issue affected 100% of the admins using the loan creation feature, causing significant inconvenience and disrupting workflow.
 
-## Root cause and resolution
-The BooktifuL platform is served by 2 ubuntu cloud servers. The master server web-01 was connected to serve all requests, and it stopped functioning due to memory outage as a results of so many requests because during a previous test, the client server web-02 was disconnected temporarily for testing and was not connected to the load balancer afterwards. 
+### Root Cause:
+A minor spelling error caused by an extra comma in the code prevented the UI from updating the list of collateral assets without a manual refresh.
 
+### Timeline
+May 1, 2024, 09:00 AM UTC: Issue detected via customer complaints.
+May 1, 2024, 10:00 AM UTC: Initial investigation began by the first assigned developer.
+May 3, 2024, 12:00 PM UTC: First developer escalated the issue to a senior engineer after failing to identify the root cause.
+May 10, 2024, 09:00 AM UTC: Second developer took over the investigation and began debugging.
+May 17, 2024, 11:00 AM UTC: Second developer also failed to fix the issue and escalated it to the team lead.
+May 20, 2024, 09:00 AM UTC: Task assigned to me by the team lead.
+May 22, 2024, 02:00 PM UTC: Spelling error identified and fixed.
+May 22, 2024, 04:00 PM UTC: Issue resolved and changes deployed.
+Root Cause and Resolution
+Root Cause:
+The issue was traced back to a minor spelling error in the code, specifically an extra comma at the end of a spelling. This error caused the condition check to fail, preventing the newly created collateral asset from being added to the cached list of assets, which in turn stopped the UI from updating without a manual page refresh.
 
-The issue was fixed when the master server was temporarily disconnected for memory clean-up then connected back to the loadbalancer and round-robin algorithm was configured so that both the master and client servers can handle equal amount of requests.
+### Resolution:
+The resolution involved identifying the exact location of the error in the code and removing the extra comma. After this correction, the code functioned as intended, allowing the newly created collateral asset to be added to the cached list and updating the UI accordingly.
 
-## Measures against such problem in future
-- Choose the best loadbalancing algorithm for your programs
-- Always keep an eye on your servers to ensure they are running properly
-- Have extra back-up servers to prevent your program fro completely going offline during an issue
+### Corrective and Preventative Measures
+## Improvements/Fixes:
+To prevent such issues in the future, the following measures will be implemented:
+
+Enhanced code review processes to catch minor errors like spelling mistakes.
+Implementation of automated tests to validate the correct updating of UI elements after API calls.
+Improved logging to quickly identify discrepancies in the data flow.
+Tasks to Address the Issue:
+
+Conduct a detailed code review to ensure no similar errors exist.
+Add automated tests specifically for the loan product creation workflow.
+Update the logging mechanism to provide clearer insights into API call results and UI updates.
+Train the development team on the importance of thorough testing and code reviews.
+Implement a continuous integration system to automate code quality checks.
+By addressing these areas, we aim to improve the robustness of our system and reduce the likelihood of similar issues occurring in the future.
